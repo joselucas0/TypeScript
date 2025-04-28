@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadrado Arrastável</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quadrado {
+            width: 100px;
+            height: 100px;
+            background: #00ff88;
+            border-radius: 15px;
+            cursor: grab;
+            position: absolute;
+            transition: 
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+            box-shadow: 0 0 15px #00ff8880;
+        }
+
+        .quadrado.arrastando {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: 0 0 25px #00ff88;
+        }
+
+        .rastro {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #00ff8820;
+            border-radius: 15px;
+            pointer-events: none;
+            animation: desaparecer 1s forwards;
+        }
+
+        @keyframes desaparecer {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="quadrado"></div>
+
+    <script>
+        const quadrado = document.querySelector('.quadrado');
+        let isDragging = false;
+        let posicaoInicial = { x: 0, y: 0 };
+        let offset = { x: 0, y: 0 };
+
+        // Sistema de arrasto
+        quadrado.addEventListener('mousedown', iniciarArrasto);
+        document.addEventListener('mousemove', arrastar);
+        document.addEventListener('mouseup', pararArrasto);
+
+        function iniciarArrasto(e) {
+            isDragging = true;
+            quadrado.classList.add('arrastando');
+            
+            const rect = quadrado.getBoundingClientRect();
+            offset = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+            
+            // Criar rastro
+            const rastro = document.createElement('div');
+            rastro.className = 'rastro';
+            rastro.style.left = `${rect.left}px`;
+            rastro.style.top = `${rect.top}px`;
+            document.body.appendChild(rastro);
+        }
+
+        function arrastar(e) {
+            if (!isDragging) return;
+            
+            const x = e.clientX - offset.x;
+            const y = e.clientY - offset.y;
+            
+            quadrado.style.left = `${x}px`;
+            quadrado.style.top = `${y}px`;
+        }
+
+        function pararArrasto() {
+            if (isDragging) {
+                isDragging = false;
+                quadrado.classList.remove('arrastando');
+                
+                // Efeito ao soltar
+                quadrado.style.transform = 'scale(1)';
+                setTimeout(() => {
+                    quadrado.style.boxShadow = '0 0 15px #00ff8880';
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>

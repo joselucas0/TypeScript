@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Cores Aleatórias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #color-box {
+            width: 300px;
+            height: 300px;
+            margin: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #color-code {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 25px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="color-box">
+            <span id="color-code">#FFFFFF</span>
+        </div>
+        <div class="controls">
+            <button id="copy-btn">Copiar Código</button>
+            <button id="reset-btn">Resetar</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const colorBox = document.getElementById('color-box');
+            const colorCode = document.getElementById('color-code');
+            const copyBtn = document.getElementById('copy-btn');
+            const resetBtn = document.getElementById('reset-btn');
+
+            // Gerar cor aleatória
+            const generateRandomColor = () => {
+                const hex = Math.floor(Math.random() * 16777215)
+                    .toString(16)
+                    .padStart(6, '0');
+                return `#${hex.toUpperCase()}`;
+            };
+
+            // Atualizar display
+            const updateColor = () => {
+                const newColor = generateRandomColor();
+                colorBox.style.backgroundColor = newColor;
+                colorCode.textContent = newColor;
+            };
+
+            // Copiar para área de transferência
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(colorCode.textContent)
+                    .then(() => alert('Cor copiada!'))
+                    .catch(() => alert('Erro ao copiar!'));
+            });
+
+            // Resetar para branco
+            resetBtn.addEventListener('click', () => {
+                colorBox.style.backgroundColor = '#FFFFFF';
+                colorCode.textContent = '#FFFFFF';
+            });
+
+            // Gerar nova cor ao clicar no quadro
+            colorBox.addEventListener('click', updateColor);
+
+            // Gerar cor inicial
+            updateColor();
+        });
+    </script>
+</body>
+</html>
